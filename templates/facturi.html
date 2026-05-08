@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <title>Facturi - Bloc X69</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .sidebar { min-width: 250px; background: #212529; color: white; min-height: 100vh; }
+        .nav-link { color: #adb5bd; }
+    </style>
+</head>
+<body>
+    <div class="d-flex">
+        <div class="sidebar p-3">
+            <h4 class="text-center mb-4">🏠 Bloc X69</h4>
+            <hr>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li><a href="/" class="nav-link">📊 Dashboard</a></li>
+                <li><a href="/apa" class="nav-link">💧 Consum Apă</a></li>
+                {% if session['role'] == 'Administrator' %}
+                <hr class="text-white-50">
+                <li><a href="/" class="nav-link">🏢 Apartamente</a></li>
+                <li><a href="/facturi" class="nav-link active">📄 Facturi Utilități</a></li>
+                <li><a href="/plati" class="nav-link">💳 Încasări Plăți</a></li>
+                <li><a href="/rapoarte" class="nav-link text-warning">📈 Raport Lunar</a></li>
+                {% endif %}
+                <hr class="text-white-50">
+                <li><a href="/logout" class="nav-link text-danger fw-bold">🚪 Deconectare</a></li>
+            </ul>
+        </div>
+        <div class="container-fluid p-5">
+            <div class="d-flex justify-content-between mb-4">
+                <h2>Facturi de la Furnizori</h2>
+                <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#addInvoice">➕ Adaugă Factură</button>
+            </div>
+            <table class="table table-striped">
+                <thead class="table-dark"><tr><th>ID</th><th>Furnizor</th><th>Suma (RON)</th><th>Data</th></tr></thead>
+                <tbody>
+                    {% for f in facturi %}
+                    <tr><td>#{{ f[0] }}</td><td>{{ f[1] }}</td><td>{{ f[2] }} RON</td><td>{{ f[3] }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addInvoice" tabindex="-1">
+        <div class="modal-dialog">
+            <form action="/add_invoice" method="POST" class="modal-content">
+                <div class="modal-body">
+                    <label>Furnizor</label>
+                    <select name="supplier_id" class="form-select mb-3">
+                        {% for s in furnizori %}<option value="{{ s[0] }}">{{ s[1] }}</option>{% endfor %}
+                    </select>
+                    <input type="number" step="0.01" name="amount" class="form-control mb-3" placeholder="Sumă Factură" required>
+                    <input type="date" name="date" class="form-control" required>
+                </div>
+                <div class="modal-footer"><button type="submit" class="btn btn-warning">Salvează Factura</button></div>
+            </form>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
